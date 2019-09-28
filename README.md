@@ -1,2 +1,2 @@
 # xUTSharp
-Unit test for Typescript embedded to Test Explorer in Visual Studio.
+Unit test for C# and Typescript embedded to Test Explorer in Visual Studio
