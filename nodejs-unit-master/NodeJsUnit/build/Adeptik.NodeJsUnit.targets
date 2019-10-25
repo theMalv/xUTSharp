@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="GenerateNodeJsUnitTests" BeforeTargets="BeforeBuild">
+
+    <Error Condition="'$(MSBuildProjectExtension)' != '.csproj'" Text="NodeJsUnit supports .csproj projects only" />
+
+    <GetFileHash Files="@(NodeJsUnitTest)" Algorithm="SHA256" HashEncoding="hex" MetadataName="FileHash">
+      <Output TaskParameter="Items" ItemName="NodeJsUnitTestFilesWithHashes" />
+    </GetFileHash>
+
+    <PropertyGroup>
+      <NodeJsUnitTestCode>
+        using Xunit%3B
+        using Xunit.Abstractions%3B
+        namespace $(NodeJsUnitTestGeneratedTestNamespace)
+        {
+        public class $(NodeJsUnitTestGeneratedTestClassName)
+        {
+        private readonly ITestOutputHelper output%3B
+        public $(NodeJsUnitTestGeneratedTestClassName)(ITestOutputHelper output)
+        {
+        this.output = output%3B
+        }
+        [Theory]
+        @(NodeJsUnitTestFilesWithHashes->'[InlineData(@"%(Identity)", "%(FileHash)")]')
+        public void $(NodeJsTestBaseName)(string testFile, string testFileHash)
+        {
+        Adeptik.NodeJsUnit.NodeJsJasmineRunner.Run(testFile, testFileHash, this.output, @"$(MSBuildThisFileDirectory)")%3B
+        }
+        }
+        }
+      </NodeJsUnitTestCode>
+    </PropertyGroup>
+
+    <ItemGroup>
+
+      <NodeJsUnitTestSourceFile Include="$(IntermediateOutputPath)$(NodeJsUnitTestGeneratedTestClassName).cs" />
+
+      <Compile Include="@(NodeJsUnitTestSourceFile)" />
+
+      <NodeJsUnitTestProjectFile Include="$(OutputPath)NODE_JS_UNIT_TEST_PROJECT" />
+
+      <!-- The FileWrites allows the file to be removed during Clean. -->
+      <FileWrites Include="@(NodeJsUnitTestSourceFile)" />
+      <FileWrites Include="@(NodeJsUnitTestProjectFile)" />
+
+    </ItemGroup>
+
+    <WriteLinesToFile File="@(NodeJsUnitTestSourceFile)" Lines="$(NodeJsUnitTestCode)" Overwrite="true" Encoding="Unicode" />
+
+    <WriteLinesToFile File="@(NodeJsUnitTestProjectFile)" Lines="$(MSBuildProjectFullPath)" Overwrite="true" Encoding="Unicode" />
+
+  </Target>
+
+</Project>

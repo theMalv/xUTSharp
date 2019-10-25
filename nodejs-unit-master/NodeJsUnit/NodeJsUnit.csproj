@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>Adeptik.NodeJsUnit</AssemblyName>
+    <RootNamespace>Adeptik.NodeJsUnit</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+  </PropertyGroup>
+
+  <!-- Version -->
+
+  <PropertyGroup>
+    <SemanticVersion>1.0.1</SemanticVersion>
+    <PreReleaseLabel></PreReleaseLabel>
+    <BuildMetadata>developer.build</BuildMetadata>
+    <PreReleaseLabelWithPrefix Condition=" '$(PreReleaseLabel)' != '' ">-$(PreReleaseLabel)</PreReleaseLabelWithPrefix>
+    <BuildMetadataWithPrefix Condition=" '$(BuildMetadata)' != '' ">+$(BuildMetadata)</BuildMetadataWithPrefix>
+    <Version>$(SemanticVersion)$(PreReleaseLabelWithPrefix)$(BuildMetadataWithPrefix)</Version>
+    <AssemblyVersion>$(SemanticVersion)</AssemblyVersion>
+    <FileVersion>$(SemanticVersion)</FileVersion>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <Target Name="ValidateVersion" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <!-- Regular expression from https://github.com/semver/semver/issues/232 -->
+      <IsVersionValid>$([System.Text.RegularExpressions.Regex]::IsMatch($(Version), `^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$`, RegexOptions.None))</IsVersionValid>
+    </PropertyGroup>
+    <Error Text="Version has invalid format. See https://semver.org" Condition=" '$(IsVersionValid)' != 'True' " />
+  </Target>
+
+  <!-- /Version -->
+
+  <PropertyGroup>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>Adeptik-PublicKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>False</DelaySign>
+    <PublicSign>True</PublicSign>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Company>Adeptik</Company>
+    <PackageId>Adeptik.NodeJsUnit</PackageId>
+    <Title>NodeJs Unit</Title>
+    <Authors>Adeptik</Authors>
+    <Owners>Adeptik</Owners>
+    <Product>Node Js Unit - test adapter between xUnit and Jasmine</Product>
+    <Description>Generates xUnit test Fact which runs tests with Jasmine.</Description>
+    <Tags>UnitTest</Tags>
+    <Copyright>Adeptik</Copyright>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="3.0.0-preview8.19405.7" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build/**/*" Pack="true" PackagePath="build/$(TargetFramework)" />
+  </ItemGroup>
+
+</Project>
