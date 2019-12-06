@@ -24,6 +24,7 @@ namespace Adeptik.NodeJsUnit
         /// <param name="testFileHash">Test file hash^: SHA256 in hex representation</param>
         /// <param name="output">xUnit output service write to</param>
         /// <param name="scriptsFolder">Folder containing 'JasmineTestRunner.js'</param>
+        [System.Obsolete]
         public static void Run(string testFile, string testFileHash, ITestOutputHelper output, string scriptsFolder)
         {
             var projectRoot = ResolveTestsRoot();

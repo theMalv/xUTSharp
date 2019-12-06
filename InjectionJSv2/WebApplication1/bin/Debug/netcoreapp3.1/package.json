@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "name": "jasmine.utest.injection.net",
+  "scripts": { "test": "jasmine" },
+  "devDependencies": {
+    "@types/jasmine": "3.4.0",
+    "jasmine": "^3.4.0",
+    "ts-node": "8.3.0",
+    "typescript": "3.5.3"
+  }
+}
